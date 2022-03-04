@@ -1,74 +1,29 @@
 import { useEffect, useState } from "react";
+
 import Matrix from "./Matrix";
+
+import { MatrixData } from "./defaultData";
+import { getShuffledMatrix, reload, reset } from "../../utils/Helpers";
 
 const Container = () => {
   let [password, setPassword] = useState<any>("");
-
-  let [matrix, setMatrix] = useState<any[]>([
-    [
-      {
-        isSelected: false,
-        title: "ani",
-      },
-      {
-        isSelected: false,
-        title: "baray",
-      },
-      {
-        isSelected: false,
-        title: "mhane",
-      },
-    ],
-    [
-      {
-        isSelected: false,
-        title: "adika",
-      },
-      {
-        isSelected: false,
-        title: "akshya",
-      },
-      {
-        isSelected: false,
-        title: "athya",
-      },
-    ],
-    [
-      {
-        isSelected: false,
-        title: "mira bro",
-      },
-      {
-        isSelected: false,
-        title: "vaish",
-      },
-      {
-        isSelected: false,
-        title: "hushar",
-      },
-    ],
-  ]);
-
-  let [copyMatrix, setcopyMatrix] = useState<any>([]);
+  let [matrix, setMatrix] = useState<any[]>(MatrixData);
 
   const authenticate = () => {
     const userPassword = localStorage.getItem("userpassword");
-    console.log(userPassword);
-    console.log(password);
-
-    console.log(typeof userPassword, typeof password);
 
     if (JSON.stringify(userPassword) == JSON.stringify(password)) {
       alert("Authenticated!!! You are genuine");
       return;
-    } else {
-      alert("Please try again");
-      reload()
     }
+
+    alert("Please try again");
+    reload();
   };
 
   const generatePattern = () => {
     localStorage.setItem("userpassword", password);
+
     setTimeout(() => {
       setPassword("");
       reload();
@@ -77,51 +32,8 @@ const Container = () => {
     alert("Password Saved Successfully!!");
   };
 
-  class Shuffler {
-    private shuffleArray = (array: any[]): any[] => {
-      let modifiedArray = [...array];
-
-      let currentIndex, randomizingIndex;
-
-      for (currentIndex = modifiedArray.length - 1; currentIndex > 0; currentIndex--) {
-        randomizingIndex = Math.floor(Math.random() * (currentIndex + 1));
-        [modifiedArray[randomizingIndex], modifiedArray[currentIndex]] = [modifiedArray[currentIndex], modifiedArray[randomizingIndex]];
-      }
-
-      return modifiedArray;
-    };
-
-    getShuffledMatrix = (matrix: any): any => {
-      console.log("before ", matrix);
-      let modifiedMatrix = [];
-
-      for (const array of matrix) modifiedMatrix.push(this.shuffleArray(array));
-
-      modifiedMatrix = this.shuffleArray(modifiedMatrix);
-      console.log("after", modifiedMatrix);
-      return modifiedMatrix;
-    };
-  }
-
-  const reload = () => {
-    location.reload();
-  };
-
-  const shuffleMatrix = () => {
-    setMatrix(new Shuffler().getShuffledMatrix(matrix));
-  };
-
-  const reset = () => {
-    localStorage.clear();
-
-    alert("Password has been reset. Enter new password pattern");
-    reload();
-  };
-
   useEffect(() => {
-    setcopyMatrix(matrix);
-    setMatrix(new Shuffler().getShuffledMatrix(matrix));
-    console.log(copyMatrix);
+    setMatrix(getShuffledMatrix(matrix));
   }, []);
 
   return (
