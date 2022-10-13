@@ -11,7 +11,7 @@ const Block = ({
     let newMatrix = [...matrix];
 
     const [row, col] = position;
-    console.log("OK");
+    console.log("OK ");
 
     newMatrix[row][col].isSelected = !isSelected;
 
